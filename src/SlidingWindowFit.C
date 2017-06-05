@@ -87,7 +87,6 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
 
 void SlidingWindowFit::fit(bool doToyMC){
     int n;
-    int global_counter = 0;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
     if (!silent) std::cout << "cut: " << buffer << std::endl;
@@ -247,5 +246,15 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
     delete c;
     delete plot;
+    delete minuit;
+    delete gamma;
+    delete norm;
+    delete scale;
+    delete r;
+    delete nll;
+    delete pdf;
+    delete r_data;
+    delete pad1;
+    delete pad2;
     glob->cd();
 }
