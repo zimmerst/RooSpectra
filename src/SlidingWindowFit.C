@@ -259,10 +259,5 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete minuit;
     delete nll;
     delete c;
-    // cleanup more.
-    delete gamma;
-    delete norm;
-    delete scale;
-    delete pdf;
     glob->cd();
 }
