@@ -260,7 +260,6 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete nll;
     delete c;
     // cleanup more.
-    delete plot;
     delete gamma;
     delete norm;
     delete scale;
