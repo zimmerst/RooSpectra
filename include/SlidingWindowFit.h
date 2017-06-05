@@ -12,6 +12,7 @@
 #include "RooAddPdf.h"
 #include "RooAbsReal.h"
 #include "RooMinuit.h"
+#include "RooMinimizer.h"
 #include "RooRandom.h"
 #include "RooFitResult.h"
 #include "TMath.h"
