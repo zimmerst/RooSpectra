@@ -255,7 +255,6 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
 
     // CLEANUP: remove all new stuff
-    delete c;
     delete r;
     delete minuit;
     delete nll;
