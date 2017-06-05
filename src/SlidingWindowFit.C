@@ -164,21 +164,20 @@ void SlidingWindowFit::fit(bool doToyMC){
         if (calls > 2){
             std::cout << "couldn't find good fit after 3 iterations, changing strategy!" << std::endl;
             minuit->setStrategy(0);
-            scale->setConstant(true);
-            norm->setConstant(true);
-            minuit->simplex();
-            minuit->migrad();
             gamma->setConstant(true);
-            scale->setConstant(false);
             minuit->simplex();
             minuit->migrad();
-            scale->setConstant(true);
-            norm->setConstant(false);
-            minuit->simplex();
-            minuit->migrad();
-            scale->setConstant(false);
-            norm->setConstant(false);
             gamma->setConstant(false);
+            scale->setConstant(true);
+            minuit->simplex();
+            minuit->migrad();
+            norm->setConstant(true);
+            scale->setConstant(false);
+            minuit->simplex();
+            minuit->migrad();
+            norm->setConstant(false);
+            scale->setConstant(false);
+            minuit->migrad();
             minuit->setStrategy(1);
             minuit->migrad();
         }
@@ -188,6 +187,7 @@ void SlidingWindowFit::fit(bool doToyMC){
         //minuit->minos(*gamma);
         calls++;
     }
+    minuit->setStrategy(2);
     minuit->hesse();
     r = minuit->save();
 
@@ -258,8 +258,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete r;
     delete minuit;
     delete nll;
-//    delete pad1;
-//    delete pad2;
+    delete pad1;
     delete c;
     glob->cd();
 }
