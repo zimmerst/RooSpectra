@@ -120,7 +120,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     //norm->setConstant(true);
     RooAbsPdf *pdf = ws->pdf("bmodel");
     if (!silent) pdf->Print();
-    RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(4)) ;
+    RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);
     minuit->setMinimizerType("Minuit");
     minuit->setVerbose(false);
@@ -151,26 +151,35 @@ void SlidingWindowFit::fit(bool doToyMC){
             nm = norm->getVal();
             gam = gamma->getVal();
             if (nm == norm->getMax() || nm == norm->getMin()){
-                norm->setVal(norm->getMax());
+                norm->setVal(norm->getMin());
                 norm->setMin(.1 * norm->getMin());
                 norm->setMax(10. * norm->getMax());
             }
             if (gam == gamma->getMax() || gam == norm->getMin()){
-                gamma->setVal(gamma->getMax());
+                gamma->setVal(gamma->getMin());
                 gamma->setMin(1.5 * gamma->getMin());
                 gamma->setMax(1.5 * gamma->getMax());
             }
         }
         if (calls > 2){
             std::cout << "couldn't find good fit after 3 iterations, changing strategy!" << std::endl;
+            minuit->setStrategy(0);
+            scale->setConstant(true);
             norm->setConstant(true);
             minuit->simplex();
             minuit->migrad();
-            norm->setConstant(false);
             gamma->setConstant(true);
+            scale->setConstant(false);
             minuit->simplex();
             minuit->migrad();
+            scale->setConstant(true);
+            norm->setConstant(false);
+            minuit->simplex();
+            minuit->migrad();
+            scale->setConstant(false);
+            norm->setConstant(false);
             gamma->setConstant(false);
+            minuit->setStrategy(1);
             minuit->migrad();
         }
         else minuit->migrad();
@@ -244,6 +253,16 @@ void SlidingWindowFit::fit(bool doToyMC){
     c->Close();
     chi2 = plot->chiSquare(ndof);
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
+
+    // CLEANUP: remove all new stuff
+    delete pad1;
+    delete pad2;
+    delete c;
+    delete plot;
+
+
+
+
 /*    delete c;
     //delete plot;
     delete pad1;

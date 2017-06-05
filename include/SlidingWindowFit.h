@@ -42,6 +42,7 @@ private:
     int nentries;
     int iter;
     int seed;
+    int numCPU;
     RooWorkspace *ws;
     RooDataSet *r_data;
     TFile *fOutput;
@@ -65,6 +66,10 @@ public:
 
     RooWorkspace *getWorkspace(){
         return ws;
+    }
+
+    void setNumCPU(int val){
+        numCPU = val;
     }
 
     void setSilent(){
