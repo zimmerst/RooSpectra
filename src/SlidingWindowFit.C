@@ -249,8 +249,9 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete pad1;
     delete pad2;
     delete minuit;
+/*
     delete r;
     delete nll;
-    delete r_data;
+    delete r_data; */
     glob->cd();
 }
