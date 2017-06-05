@@ -125,7 +125,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooMinimizer *minuit= new RooMinimizer(*nll);
     minuit->setMinimizerType("Minuit");
     minuit->setVerbose(false);
-    minuit->setPrintLevel(0);
+    minuit->setPrintLevel(-1);
     RooFitResult *r = new RooFitResult();
     int calls, max_calls, status;
     calls = 1;
