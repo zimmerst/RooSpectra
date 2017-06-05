@@ -127,7 +127,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     minuit->setVerbose(false);
     minuit->setPrintLevel(0);
     RooFitResult *r = new RooFitResult();
-    int calls, max_calls;
+    int calls, max_calls, status;
     calls = 1;
     max_calls = 6;
     double nm, gam;
@@ -136,6 +136,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     max_norm_old = norm->getMax();
     min_gamma_old= gamma->getMin();
     max_gamma_old= gamma->getMax();
+    status = -1;
     while (status != 0) {
         if (calls > max_calls) {
             std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
@@ -173,7 +174,7 @@ void SlidingWindowFit::fit(bool doToyMC){
             gamma->setConstant(false);
             minuit->migrad();
         }
-        minuit->migrad();
+        else minuit->migrad();
         r = minuit->save();
         status = r->status();
         //minuit->minos(*gamma);
