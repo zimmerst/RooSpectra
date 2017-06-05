@@ -126,65 +126,61 @@ void SlidingWindowFit::fit(bool doToyMC){
     minuit->setMinimizerType("Minuit");
     minuit->setVerbose(false);
     minuit->setPrintLevel(0);
-    int status = -1;
-    minuitCall:
-        int max_calls = 6;
-        int calls = 1;
-        double min_norm_old, max_norm_old, min_gamma_old, max_gamma_old;
-        double nm, gam;
-        RooFitResult *r = new RooFitResult();
-        while (status != 0) {
-            if (calls > max_calls) {
-                std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
-                norm->setMin(min_norm_old);
-                norm->setMax(max_norm_old);
-                gamma->setMax(max_gamma_old);
-                gamma->setMin(min_gamma_old);
-                //throw;
-            }
-            if (calls > 1){
-                std::cout << "fitting - attempt: " << calls << std::endl;
-                // if it's pegging, increase
-                nm = norm->getVal();
-                gam = gamma->getVal();
-                if (nm == norm->getMax() || nm == norm->getMin()){
-                    norm->setVal(norm->getMax());
-                    norm->setMin(.1 * norm->getMin());
-                    norm->setMax(10. * norm->getMax());
-                }
-                if (gam == gamma->getMax() || gam == norm->getMin()){
-                    gamma->setVal(gamma->getMax());
-                    gamma->setMin(1.5 * gamma->getMin());
-                    gamma->setMax(1.5 * gamma->getMax());
-                }
-                /*norm->setVal(.5 * (norm->getMax() - norm->getMin()));
-                gamma->setVal(.5 * (gamma->getMax() - gamma->getMin()));*/
-            }
-            minuit->migrad();
-            r = minuit->save();
-            status = r->status();
-            //minuit->minos(*gamma);
-            calls++;
+    RooFitResult *r = new RooFitResult();
+    int calls, max_calls;
+    calls = 1;
+    max_calls = 6;
+    double nm, gam;
+    double min_norm_old, max_norm_old, min_gamma_old, max_gamma_old;
+    min_norm_old = norm->getMin();
+    max_norm_old = norm->getMax();
+    min_gamma_old= gamma->getMin();
+    max_gamma_old= gamma->getMax();
+    while (status != 0) {
+        if (calls > max_calls) {
+            std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
+            norm->setMin(min_norm_old);
+            norm->setMax(max_norm_old);
+            gamma->setMax(max_gamma_old);
+            gamma->setMin(min_gamma_old);
+            break;
         }
-        minuit->hesse();
+        if (calls > 1){
+            std::cout << "fitting - attempt: " << calls << std::endl;
+            // if it's pegging, increase
+            nm = norm->getVal();
+            gam = gamma->getVal();
+            if (nm == norm->getMax() || nm == norm->getMin()){
+                norm->setVal(norm->getMax());
+                norm->setMin(.1 * norm->getMin());
+                norm->setMax(10. * norm->getMax());
+            }
+            if (gam == gamma->getMax() || gam == norm->getMin()){
+                gamma->setVal(gamma->getMax());
+                gamma->setMin(1.5 * gamma->getMin());
+                gamma->setMax(1.5 * gamma->getMax());
+            }
+        }
+        if (calls > 2){
+            std::cout << "couldn't find good fit after 3 iterations, changing strategy!" << std::endl;
+            norm->setConstant(true);
+            minuit->simplex();
+            minuit->migrad();
+            norm->setConstant(false);
+            gamma->setConstant(true);
+            minuit->simplex();
+            minuit->migrad();
+            gamma->setConstant(false);
+            minuit->migrad();
+        }
+        minuit->migrad();
         r = minuit->save();
-    if (norm->getVal() == norm->getMin() || norm->getVal() == norm->getMin()){
-        std::cout << "norm parameter at bounds, relaxing and refitting" << std::endl;
-        norm->setMin(.1 * norm->getMin());
-        norm->setMax(10. * norm->getMax());
-        global_counter++;
+        status = r->status();
+        //minuit->minos(*gamma);
+        calls++;
     }
-    if (gamma->getVal() == gamma->getMin() || gamma->getVal() == gamma->getMin()){
-        std::cout << "gamma parameter at bounds, relaxing and refitting" << std::endl;
-        gamma->setMin(2. * gamma->getMin());
-        gamma->setMax(2. * gamma->getMax());
-        global_counter++;
-    }
-    if (global_counter > 4){
-        std::cout << "could not find good fit minimum, giving up" << std::endl;
-        throw;
-    }
-    if (global_counter > 0) goto minuitCall;
+    minuit->hesse();
+    r = minuit->save();
 
     //RooFitResult *r = pdf->fitTo(*r_data, RooFit::Save(true),RooFit::Minimizer("Minuit", "Migrad"),
     //                             PrintLevel(-1),Verbose(false),Extended(true));
