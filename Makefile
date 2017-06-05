@@ -86,7 +86,7 @@ INCLUDES=-I./ -I$(ROOTSYS)/include -I$(INC)
 
 TARGETLIB := RooSpectra
 
-SOURCES:= RooAsymmLorentzian.C RooBrokenPowerLaw.C  RooPowerLaw.C
+SOURCES:= RooAsymmLorentzian.C RooBrokenPowerLaw.C  RooPowerLaw.C SlidingWindowFit.C
 #IndexFitter.C
 
 OBJECTS += $(SOURCES:%.C=./obj/%.o)
@@ -143,7 +143,7 @@ $(OBJ)/Dict.o: $(OBJ)/Dict.cxx
 	@if ! [ -d $(OBJ) ] ; then mkdir -p $(OBJ); fi
 	$(CXX) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-$(OBJ)/Dict.cxx: $(INC)/Roo*.h $(INC)/LinkDef.h
+$(OBJ)/Dict.cxx: $(INC)/Roo*.h $(INC)/Sliding*.h $(INC)/LinkDef.h
 	@echo Creating  $@ ...
 	@if ! [ -d $(OBJ) ] ; then mkdir -p $(OBJ); fi
 	$(ROOTSYS)/bin/rootcint -f $@ -c -p $(CFLAGSFORCINT) $(INCLUDES) $^

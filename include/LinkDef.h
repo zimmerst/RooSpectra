@@ -9,5 +9,6 @@
 #pragma link C++ class RooDMSpec2;
 #pragma link C++ class RooAsymmLorentzian;
 #pragma link C++ class RooPulsarSpec;
+#pragma link C++ class SlidingWindowFit;
 
 #endif
