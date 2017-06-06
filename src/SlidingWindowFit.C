@@ -84,7 +84,6 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
 }
 
 void SlidingWindowFit::fit(bool doToyMC){
-    rplot->Clear();
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
@@ -218,39 +217,39 @@ void SlidingWindowFit::fit(bool doToyMC){
     pad2->Draw();
     // let's add some plotting.
     pad1->cd();
-    rplot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
-    pdf->paramOn(rplot,Format("NEU",AutoPrecision(1)));
-    r_data->plotOn(rplot,DataError(RooAbsData::SumW2));
+    RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
+    pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
+    r_data->plotOn(plot,DataError(RooAbsData::SumW2));
 
     n = sprintf(buffer,"E > %1.4f && E <= %1.4f (nObs=%1.1e)", emin, emax, float(nobs));
 
-    rplot->SetTitle(buffer);
-    rplot->GetXaxis()->SetTitle("BgoTotalEcorr");
-    pdf->plotOn(rplot,VisualizeError(*r,1,true),FillColor(kYellow));
-    pdf->plotOn(rplot,LineStyle(kDashed),LineColor(kBlue),DrawOption("Lsame"));
+    plot->SetTitle(buffer);
+    plot->GetXaxis()->SetTitle("BgoTotalEcorr");
+    pdf->plotOn(plot,VisualizeError(*r,1,true),FillColor(kYellow));
+    pdf->plotOn(plot,LineStyle(kDashed),LineColor(kBlue),DrawOption("Lsame"));
 /*        TCanvas *c = new TCanvas("c",buffer,800,600);
     c->Divide(1,2);
     c->cd(1); */
     //plot->SetAxisRange(emin,emax,"X");
-    rplot->Draw("same");
+    plot->Draw("same");
     //gPad->SetLogx();
     //gPad->SetLogy();
-    rplot->GetXaxis()->SetMoreLogLabels();
-    rplot->GetXaxis()->SetNoExponent();
-    rplot->GetYaxis()->SetMoreLogLabels();
-    rplot->GetYaxis()->SetNoExponent();
+    plot->GetXaxis()->SetMoreLogLabels();
+    plot->GetXaxis()->SetNoExponent();
+    plot->GetYaxis()->SetMoreLogLabels();
+    plot->GetYaxis()->SetNoExponent();
     if (savePlot) fOutput->cd("fit_panels");
     n = sprintf(buffer,"pwl_fit_window%d_emin_%d_emax_%d", iter, int(emin), int(emax));
     pad2->cd();
     //c->cd(2);
-    RooHist *h1 = (RooHist*)rplot->residHist();
+    RooHist *h1 = (RooHist*)plot->residHist();
     h1->GetXaxis()->SetRangeUser(emin,emax);
     h1->Draw();
     //c->Update();
     c->SetName(buffer);
     if (savePlot) c->Write();
     c->Close();
-    chi2 = rplot->chiSquare(ndof);
+    chi2 = plot->chiSquare(ndof);
 
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
 

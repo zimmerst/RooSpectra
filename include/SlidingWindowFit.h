@@ -49,7 +49,6 @@ private:
     TDirectory *glob;
     bool savePlot;
     bool silent;
-    RooPlot *rplot;
 
 public:
     SlidingWindowFit(double v1, double v2){
@@ -60,7 +59,6 @@ public:
         savePlot = true;
         silent = false;
         seed = 1111;
-        rplot = new RooPlot();
     }
     void setSeed(int val){
         seed = val;
@@ -105,8 +103,7 @@ public:
     }
 
     virtual ~SlidingWindowFit(){
-        //delete rplot;
-        //delete ws;
+
     };
 
     int getEntries(){ return nentries; }
