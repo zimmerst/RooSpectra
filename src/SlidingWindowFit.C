@@ -84,6 +84,7 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
 }
 
 void SlidingWindowFit::fit(bool doToyMC){
+    rplot->Clear();
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
@@ -250,7 +251,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (savePlot) c->Write();
     c->Close();
     chi2 = rplot->chiSquare(ndof);
-    rplot->Clear();
+
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
 
     // CLEANUP: remove all new stuff
