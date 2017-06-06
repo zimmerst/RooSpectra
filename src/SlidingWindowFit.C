@@ -64,7 +64,6 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     RooAbsPdf *pdf = ws->pdf(signal_pdf);
     double g = ws->var("gamma")->getVal();
     ws->var("gamma")->setVal(3.10);
-    fOutput->cd("toyMC");
     TH1D *h1_window = new TH1D("h1_window","toyMC",100,1.8,4.4);
     TH1D *h1_chi2 = new TH1D("h1_chi2","toyMC chi2 log10",60,-1,1);
     // loop over all toys.
@@ -80,12 +79,14 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     h1_chi2->SetName(buffer);
     h1_window->Write();
     h1_chi2->Write();
-    fOutput->cd("");
+    h1_window->Close();
+    h1_chi2->Close();
     delete h1_window;
     delete h1_chi2;
 }
 
 void SlidingWindowFit::fit(bool doToyMC){
+    if (doToyMC) savePlot = false;
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
@@ -259,5 +260,5 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete minuit;
     delete nll;
     delete c;
-    glob->cd();
+    if (savePlot) glob->cd();
 }
