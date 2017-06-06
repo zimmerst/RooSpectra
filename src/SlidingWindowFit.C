@@ -258,5 +258,5 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete minuit;
     delete nll;
     delete c;
-    if (savePlot) glob->cd();
+    glob->cd();
 }
