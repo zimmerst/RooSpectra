@@ -199,7 +199,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     //index[1] = gamma->getAsymErrorLo();
     //index[2] = gamma->getAsymErrorHi();
     index[1] = -gamma->getPropagatedError(*r);
-    index[2] = gamma->getPropagatedError(*r);
+    index[2] = -index[1];
     chi2 = 0.;
     //r->Print();
     TCanvas *c = new TCanvas("c",buffer,800,600);
