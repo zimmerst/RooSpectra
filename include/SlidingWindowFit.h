@@ -60,7 +60,7 @@ public:
         savePlot = true;
         silent = false;
         seed = 1111;
-        RooPlot *rplot = new RooPlot();
+        rplot = new RooPlot();
     }
     void setSeed(int val){
         seed = val;

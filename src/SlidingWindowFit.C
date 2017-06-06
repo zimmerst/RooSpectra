@@ -223,8 +223,8 @@ void SlidingWindowFit::fit(bool doToyMC){
 
     n = sprintf(buffer,"E > %1.4f && E <= %1.4f (nObs=%1.1e)", emin, emax, float(nobs));
 
-    plot->SetTitle(buffer);
-    plot->GetXaxis()->SetTitle("BgoTotalEcorr");
+    rplot->SetTitle(buffer);
+    rplot->GetXaxis()->SetTitle("BgoTotalEcorr");
     pdf->plotOn(rplot,VisualizeError(*r,1,true),FillColor(kYellow));
     pdf->plotOn(rplot,LineStyle(kDashed),LineColor(kBlue),DrawOption("Lsame"));
 /*        TCanvas *c = new TCanvas("c",buffer,800,600);
