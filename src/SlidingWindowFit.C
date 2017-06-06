@@ -79,8 +79,6 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     h1_chi2->SetName(buffer);
     h1_window->Write();
     h1_chi2->Write();
-    h1_window->Close();
-    h1_chi2->Close();
     delete h1_window;
     delete h1_chi2;
 }
