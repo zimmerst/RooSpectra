@@ -105,8 +105,8 @@ public:
     }
 
     virtual ~SlidingWindowFit(){
-        delete rplot;
-        delete ws;
+        //delete rplot;
+        //delete ws;
     };
 
     int getEntries(){ return nentries; }
