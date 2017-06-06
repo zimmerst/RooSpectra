@@ -217,39 +217,40 @@ void SlidingWindowFit::fit(bool doToyMC){
     pad2->Draw();
     // let's add some plotting.
     pad1->cd();
-    RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
-    pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
-    r_data->plotOn(plot,DataError(RooAbsData::SumW2));
+    rplot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
+    pdf->paramOn(rplot,Format("NEU",AutoPrecision(1)));
+    r_data->plotOn(rplot,DataError(RooAbsData::SumW2));
 
     n = sprintf(buffer,"E > %1.4f && E <= %1.4f (nObs=%1.1e)", emin, emax, float(nobs));
 
     plot->SetTitle(buffer);
     plot->GetXaxis()->SetTitle("BgoTotalEcorr");
-    pdf->plotOn(plot,VisualizeError(*r,1,true),FillColor(kYellow));
-    pdf->plotOn(plot,LineStyle(kDashed),LineColor(kBlue),DrawOption("Lsame"));
+    pdf->plotOn(rplot,VisualizeError(*r,1,true),FillColor(kYellow));
+    pdf->plotOn(rplot,LineStyle(kDashed),LineColor(kBlue),DrawOption("Lsame"));
 /*        TCanvas *c = new TCanvas("c",buffer,800,600);
     c->Divide(1,2);
     c->cd(1); */
     //plot->SetAxisRange(emin,emax,"X");
-    plot->Draw("same");
+    rplot->Draw("same");
     //gPad->SetLogx();
     //gPad->SetLogy();
-    plot->GetXaxis()->SetMoreLogLabels();
-    plot->GetXaxis()->SetNoExponent();
-    plot->GetYaxis()->SetMoreLogLabels();
-    plot->GetYaxis()->SetNoExponent();
+    rplot->GetXaxis()->SetMoreLogLabels();
+    rplot->GetXaxis()->SetNoExponent();
+    rplot->GetYaxis()->SetMoreLogLabels();
+    rplot->GetYaxis()->SetNoExponent();
     if (savePlot) fOutput->cd("fit_panels");
     n = sprintf(buffer,"pwl_fit_window%d_emin_%d_emax_%d", iter, int(emin), int(emax));
     pad2->cd();
     //c->cd(2);
-    RooHist *h1 = (RooHist*)plot->residHist();
+    RooHist *h1 = (RooHist*)rplot->residHist();
     h1->GetXaxis()->SetRangeUser(emin,emax);
     h1->Draw();
     //c->Update();
     c->SetName(buffer);
     if (savePlot) c->Write();
     c->Close();
-    chi2 = plot->chiSquare(ndof);
+    chi2 = rplot->chiSquare(ndof);
+    rplot->Clear();
     if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
 
     // CLEANUP: remove all new stuff
