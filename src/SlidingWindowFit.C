@@ -84,7 +84,6 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
 }
 
 void SlidingWindowFit::fit(bool doToyMC){
-    if (doToyMC) savePlot = false;
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);

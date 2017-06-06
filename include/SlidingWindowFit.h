@@ -64,6 +64,11 @@ public:
         seed = val;
     }
 
+    void setPlotSave(bool val){
+        savePlot = val;
+    }
+
+
     RooWorkspace *getWorkspace(){
         return ws;
     }
