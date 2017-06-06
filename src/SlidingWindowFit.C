@@ -19,7 +19,7 @@ void SlidingWindowFit::setData(char fname[128], char tname[24]){
     if (!silent) ttree_data->Print();
     //RooRealVar *w = ws->var("weight");
     RooRealVar *E = ws->var("E");
-    RooDataSet *data = new RooDataSet("data", "data", RooArgSet(*E), Import(*ttree_data),Cut("E <= 2e3 && E > 25."));
+    RooDataSet *data = new RooDataSet("data", "data", RooArgSet(*E), Import(*ttree_data),Cut("E <= 3e3 && E > 25."));
     ws->import(*data);
 }
 
