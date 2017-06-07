@@ -185,8 +185,8 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooDataHist *binned_data;
     if (is_binned){
         E->setBinning(*custom_binning);
-        binned_data = (RooDataHist*)r_data->binnedClone("binned_data","binned dataset");
-        nll = pdf->createNLL(*(RooAbsData*)binned_data,NumCPU(numCPU)) ;
+        binned_data = (RooAbsData*)r_data->binnedClone("binned_data","binned dataset");
+        nll = pdf->createNLL(*binned_data,NumCPU(numCPU)) ;
     }
     else{
         nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
