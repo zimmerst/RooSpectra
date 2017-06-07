@@ -129,7 +129,7 @@ public:
         while (val < logEmax){
             val+=delta;
             valE=pow(10.,val);
-            std::cout << "valE: " << valE <<  " logE: " << val << std::endl;
+            if (!silent) std::cout << "valE: " << valE <<  " logE: " << val << std::endl;
             custom_binning->addBoundary(valE);
         }
     }
