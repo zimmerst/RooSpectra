@@ -27,7 +27,7 @@ void SlidingWindowFit::buildModel(){
     RooRealVar E("E","E",emin,emax);
     ws->import(E);
     double f_nobs = 1e8;
-    RooRealVar gamma("gamma", "#gamma", 3.07, 1, 6);
+    RooRealVar gamma("gamma", "#gamma", 3.07, 0, 10);
     RooRealVar scale("scale", "scale" , 1.0, 1e-4,1e4);
     //RooRealVar weight("weight","weight",1.0,0.,1.0);
     RooRealVar norm("norm","norm",f_nobs, f_nobs - TMath::Sqrt(f_nobs), f_nobs + TMath::Sqrt(f_nobs));
