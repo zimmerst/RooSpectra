@@ -55,6 +55,7 @@ private:
     TDirectory *glob;
     bool savePlot;
     bool silent;
+    bool is_binned;
 
 public:
     SlidingWindowFit(double v1, double v2){
@@ -69,6 +70,7 @@ public:
         seed = 1111;
         use_custom_binning = false;
         pdfname_fit = new TString("bmodel");
+        is_binned = false;
     }
 
     void setNbins(int val){
@@ -77,6 +79,10 @@ public:
 
     void setSeed(int val){
         seed = val;
+    }
+
+    void setBinnedData(bool val){
+        is_binned = val;
     }
 
     void setSignalPdf(TString val){

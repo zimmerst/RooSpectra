@@ -144,6 +144,12 @@ void SlidingWindowFit::fit(bool doToyMC){
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
     if (!silent) std::cout << "cut: " << buffer << std::endl;
+
+    if (!use_custom_binning){
+        if (!silent) std::cout << "adding " << nbins << " uniform bins from E=" << emin << " - E=" << emax << std::endl;
+        custom_binning->addUniform(nbins,emin,emax);
+    }
+
     RooRealVar *E = ws->var("E");
     E->setMax(emax);
     E->setMin(emin);
@@ -155,6 +161,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     gamma->setConstant(false);
     //scale->setConstant(false);
     //RooRealVar *w=ws->var("weight");
+
     if (!doToyMC) {
         r_data = (RooDataSet *) ws->data("data")->reduce(RooArgSet(*E), buffer);
     }
@@ -173,7 +180,15 @@ void SlidingWindowFit::fit(bool doToyMC){
     //norm->setConstant(true);
     RooAbsPdf *pdf = ws->pdf(pdfname_fit->Data());
     if (!silent) pdf->Print();
-    RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
+
+    RooAbsReal *nll;
+    if (is_binned){
+        RooDataHist *binned_data = r_data->binnedClone("binned_data","binned dataset",Binning(*custom_binning));
+        nll = pdf->createNLL(*binned_data,NumCPU(numCPU)) ;
+    }
+    else{
+        nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
+    }
     RooMinimizer *minuit= new RooMinimizer(*nll);
     minuit->setMinimizerType("Minuit");
     if (silent) {
@@ -283,10 +298,6 @@ void SlidingWindowFit::fit(bool doToyMC){
     pad1->cd();
     RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
     pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
-    if (!use_custom_binning){
-        if (!silent) std::cout << "adding " << nbins << " uniform bins from E=" << emin << " - E=" << emax << std::endl;
-        custom_binning->addUniform(nbins,emin,emax);
-    }
 
     r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(*custom_binning));
 
