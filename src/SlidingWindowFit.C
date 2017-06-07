@@ -318,7 +318,11 @@ void SlidingWindowFit::fit(bool doToyMC){
     c->Close();
     chi2 = plot->chiSquare(ndof);
     plot->Delete();
-    if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2*ndof << "/" << ndof << std::endl;
+    if (!silent) {
+        std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << std::end;
+        std::cout << "+" << index[2] << " chi2/ndof: " << chi2*ndof << std::end;
+        std::cout << "/" << int(plot->GetNbinsX())-int(ndof) << "=" << chi2 << std::endl;
+    }
 
     // CLEANUP: remove all new stuff
     delete r;
@@ -326,9 +330,5 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete nll;
     delete c;
     glob->cd();
-
-
-
-
 
 }
