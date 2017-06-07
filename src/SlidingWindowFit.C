@@ -40,6 +40,11 @@ void SlidingWindowFit::buildModel(){
     ws->import(gamma);
     ws->import(scale);
     ws->import(norm);
+    ws->import(gamma1);
+    ws->import(gamma2);
+    ws->import(beta);
+    ws->import(Ec);
+    ws->import(alpha);
     //ws->import(weight);
     if (!silent) ws->Print();
     // build powerlaw
@@ -141,7 +146,6 @@ void SlidingWindowFit::fit(bool doToyMC){
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
     if (!silent) std::cout << "cut: " << buffer << std::endl;
-    const char* signal_pdf = pdfname_fit->Data();
     RooRealVar *E = ws->var("E");
     E->setMax(emax);
     E->setMin(emin);
@@ -169,7 +173,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     norm->setMin(f_nobs - TMath::Sqrt(f_nobs));
     norm->setMax(f_nobs + TMath::Sqrt(f_nobs));
     //norm->setConstant(true);
-    RooAbsPdf *pdf = ws->pdf(signal_pdf);
+    RooAbsPdf *pdf = ws->pdf(pdfname_fit->Data());
     if (!silent) pdf->Print();
     RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);
