@@ -56,6 +56,20 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     RooRealVar *E = ws->var("E");
     int n;
     char buffer[128];
+    double norm_fit, gamma_fit, scale_fit;
+    double norm_true, gamma_true, scale_true;
+    double norm_pull, gamma_pull, scale_pull;
+    double chi2val;
+    n = sprintf(buffer,"pull_%d_emin_%d_emax_%d", iter, int(emin), int(emax));
+    TTree *fTree = new TTree(buffer,"tree of pulls");
+    fTree->Branch("norm_fit",&norm_fit,"norm_fit/D");
+    fTree->Branch("gamma_fit",&gamma_fit,"gamma_fit/D");
+    fTree->Branch("scale_fit",&scale_fit,"scale_fit/D");
+    fTree->Branch("norm_true",&norm_true,"norm_true/D");
+    fTree->Branch("gamma_true",&gamma_true,"gamma_true/D");
+    fTree->Branch("scale_true",&scale_true,"scale_true/D");
+    fTree->Branch("chi2",&chi2val,"chi2/D");
+
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
     r_data = (RooDataSet *) ws->data("data")->reduce(RooArgSet(*E), buffer);
     n = sprintf(buffer,"h1_window%d_emin_%d_emax_%d", iter, int(emin), int(emax));
@@ -66,21 +80,34 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     //ws->var("gamma")->setVal(3.10);
     TH1D *h1_window = new TH1D("h1_window","toyMC",100,1.8,4.4);
     TH1D *h1_chi2 = new TH1D("h1_chi2","toyMC chi2 log10",60,-1,1);
+
+    gamma_true = ws->var("gamma")->getVal();
+    norm_true = ws->var("norm")->getVal();
+    scale_true = ws->var("scale")->getVal();
+
     // loop over all toys.
     for (int i = 0; i < ntoys; i++){
         int n_obs_mock = gRandom->Poisson(nobs);
         r_data = pdf->generate(*E,n_obs_mock);
         this->fit(true);
+        gamma_fit = ws->var("gamma")->getVal();
+        norm_fit = ws->var("norm")->getVal();
+        scale_fit = ws->var("scale")->getVal();
+
+        chi2val = chi2;
         h1_window->Fill(index[0]);
         h1_chi2->Fill(TMath::Log10(chi2));
+        fTree->Fill();
     }
     h1_window->SetName(buffer);
     n = sprintf(buffer,"h1_chi2_%d_emin_%d_emax_%d", iter, int(emin), int(emax));
     h1_chi2->SetName(buffer);
     h1_window->Write();
     h1_chi2->Write();
+    fTree->Write();
     delete h1_window;
     delete h1_chi2;
+    delete fTree;
 }
 
 void SlidingWindowFit::fit(bool doToyMC){
@@ -260,7 +287,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete c;
     glob->cd();
 
-    
+
 
 
 
