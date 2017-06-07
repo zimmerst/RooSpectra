@@ -296,6 +296,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     c->cd(1); */
     //plot->SetAxisRange(emin,emax,"X");
     plot->Draw("same");
+    if (use_custom_binning) gPad->SetLogx();
     //gPad->SetLogx();
     //gPad->SetLogy();
     plot->GetXaxis()->SetMoreLogLabels();
@@ -309,6 +310,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooHist *h1 = (RooHist*)plot->residHist();
     h1->GetXaxis()->SetRangeUser(emin,emax);
     h1->Draw();
+    if (use_custom_binning) gPad->SetLogx();
     //c->Update();
     c->SetName(buffer);
     if (savePlot) c->Write();
