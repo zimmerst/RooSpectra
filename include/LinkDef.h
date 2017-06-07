@@ -5,6 +5,7 @@
 
 #pragma link C++ class RooPowerLaw;
 #pragma link C++ class RooBrokenPowerLaw;
+#pragma link C++ class RooBrokenPowerLaw2;
 #pragma link C++ class RooDMSpec;
 #pragma link C++ class RooDMSpec2;
 #pragma link C++ class RooAsymmLorentzian;

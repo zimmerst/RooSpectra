@@ -86,7 +86,7 @@ INCLUDES=-I./ -I$(ROOTSYS)/include -I$(INC)
 
 TARGETLIB := RooSpectra
 
-SOURCES:= RooAsymmLorentzian.C RooBrokenPowerLaw.C  RooPowerLaw.C SlidingWindowFit.C
+SOURCES:= RooAsymmLorentzian.C RooBrokenPowerLaw.C RooBrokenPowerLaw2.C RooPowerLaw.C SlidingWindowFit.C
 #IndexFitter.C
 
 OBJECTS += $(SOURCES:%.C=./obj/%.o)
