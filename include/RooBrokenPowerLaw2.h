@@ -18,7 +18,7 @@ protected :
   RooRealProxy fIndex2;
   RooRealProxy fXBreak;
   RooRealProxy falpha;
-  RooRealProxy fNormalisation
+  RooRealProxy fNormalisation;
   Double_t evaluate() const {
     double value(0.0);
     if (fX > 0.0 && falpha != 0){
