@@ -23,7 +23,7 @@
 #include "TH1D.h"
 #include "TCanvas.h"
 #include "TPad.h"
-
+#include <string>
 #include <vector>
 #include <iostream>
 
@@ -60,7 +60,7 @@ public:
         savePlot = true;
         silent = false;
         seed = 1111;
-        pdfname_fit = "bmodel";
+        string::strcpy(pdfname_fit,"bmodel");
     }
     void setSeed(int val){
         seed = val;
