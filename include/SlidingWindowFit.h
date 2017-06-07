@@ -46,7 +46,7 @@ private:
     int iter;
     int seed;
     int numCPU;
-    char *pdfname_fit[64];
+    char *pdfname_fit;
     RooWorkspace *ws;
     RooDataSet *r_data;
     RooBinning *custom_binning;
@@ -68,7 +68,7 @@ public:
         custom_binning = new RooBinning(emin,emax);
         seed = 1111;
         use_custom_binning = false;
-        strcpy(pdfname_fit,"bmodel");
+        pdfname_fit = TString("bmodel").Data();
     }
 
     void setNbins(int val){
