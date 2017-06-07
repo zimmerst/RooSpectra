@@ -182,7 +182,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) pdf->Print();
 
     RooAbsReal *nll;
-    RooDataHist *binned_data;
+    RooAbsData *binned_data;
     if (is_binned){
         E->setBinning(*custom_binning);
         binned_data = (RooAbsData*)r_data->binnedClone("binned_data","binned dataset");
