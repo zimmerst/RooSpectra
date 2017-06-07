@@ -124,10 +124,13 @@ public:
         double logEmin = TMath::Log10(emin);
         double logEmax = TMath::Log10(emax);
         double delta = (logEmax - logEmin) / float(nbins);
-        double val = emin;
-        while (val < emax){
-            val+=pow(10.,val);
-            custom_binning->addBoundary(val);
+        double val = logEmin;
+        double valE = pow(10.,val);
+        while (val < logEmax){
+            val+=delta;
+            valE=pow(10.,val);
+            std::cout << "valE: " << valE <<  " logE: " << val << std::endl;
+            custom_binning->addBoundary(valE);
         }
     }
 
