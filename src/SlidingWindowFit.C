@@ -148,6 +148,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!use_custom_binning){
         if (!silent) std::cout << "adding " << nbins << " uniform bins from E=" << emin << " - E=" << emax << std::endl;
         custom_binning->addUniform(nbins,emin,emax);
+        if (!silent) custom_binning->Print();
     }
 
     RooRealVar *E = ws->var("E");
