@@ -29,6 +29,12 @@ void SlidingWindowFit::buildModel(){
     double f_nobs = 1e8;
     RooRealVar gamma("gamma", "#gamma", 3.07, 0, 10);
     RooRealVar scale("scale", "scale" , 1.0);
+    RooRealVar gamma1("gamma1","$gamma1",3,0,10);
+    RooRealVar gamma2("gamma2","$gamma2",3,0,10);
+    RooRealVar beta("beta","#beta",1,0,20);
+    RooRealVar Ec("Ec","Ec",emin,emax*100.);
+    RooRealVar alpha("alpha","#alpha",0.5,0.,1.);
+
     //RooRealVar weight("weight","weight",1.0,0.,1.0);
     RooRealVar norm("norm","norm",f_nobs, f_nobs - TMath::Sqrt(f_nobs), f_nobs + TMath::Sqrt(f_nobs));
     ws->import(gamma);
@@ -39,12 +45,32 @@ void SlidingWindowFit::buildModel(){
     // build powerlaw
     //RooGenericPdf pwl("pwl","powerlaw","scale*pow(E,-gamma)",RooArgSet(E,gamma,scale));
     RooFormulaVar pwl("pwl","(scale*E)**(-gamma)",RooArgList(E,gamma,scale));
+    RooFormulaVar pwl_exp("pwl_exp","(scale*E)**(-gamma)*exp(-E/Ec)",RooArgList(E,gamma,scale,Ec));
+    RooFormulaVar pwl_exp2("pwl_exp2","(scale*E)**(-gamma)*pow(exp(-E/Ec),beta)",RooArgList(E,gamma,scale,Ec,beta));
+    RooFormulaVar bpl("bpl","(scale*E/Ec)**(-gamma1) * (1+(scale*E/Ec)**(1./alpha))**(-(gamma2-gamma1)*alpha) ",
+                      RooArgList(E,gamma1,gamma2,scale,Ec,alpha));
     //ws->import(pwl);
     RooGenericPdf pwl_pdf("pwl_pdf","pwl",RooArgSet(pwl));
+    RooGenericPdf pwl_exp_pdf("pwl_exp_pdf","pwl_exp",RooArgSet(pwl_exp));
+    RooGenericPdf pwl_exp2_pdf("pwl_exp2_pdf","pwl_exp2",RooArgSet(pwl_exp2));
+    RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
+
     RooAddPdf bmodel("bmodel","bmodel",
                        RooArgList(pwl_pdf),
                        RooArgList(norm));
+
+    RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_pdf),RooArgList(norm));
+    RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp_pdf),RooArgList(norm));
+    RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(pwl_exp2_pdf),RooArgList(norm));
+    RooAddPdf bmodel4("bmodel4","bmodel4",RooArgList(bpl_pdf),RooArgList(norm));
+
+
+
     ws->import(bmodel);
+    ws->import(bmodel1);
+    ws->import(bmodel2);
+    ws->import(bmodel3);
+    ws->import(bmodel4);
     if (!silent) ws->Print();
 }
 void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
