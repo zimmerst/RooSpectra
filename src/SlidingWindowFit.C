@@ -141,7 +141,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
     if (!silent) std::cout << "cut: " << buffer << std::endl;
-
+    const char* signal_pdf = pdfname_fit->Data();
     RooRealVar *E = ws->var("E");
     E->setMax(emax);
     E->setMin(emin);
@@ -169,7 +169,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     norm->setMin(f_nobs - TMath::Sqrt(f_nobs));
     norm->setMax(f_nobs + TMath::Sqrt(f_nobs));
     //norm->setConstant(true);
-    RooAbsPdf *pdf = ws->pdf(pdfname_fit);
+    RooAbsPdf *pdf = ws->pdf(signal_pdf);
     if (!silent) pdf->Print();
     RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);
@@ -189,7 +189,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     min_gamma_old= gamma->getMin();
     max_gamma_old= gamma->getMax();
     status = -1;
-    if (strcmp(*pdfname_fit,"bmodel")){
+    if (pdfname_fit == "bmodel"){
         while (status != 0) {
             if (calls > max_calls) {
                 std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
@@ -238,6 +238,7 @@ void SlidingWindowFit::fit(bool doToyMC){
         }
     }
     else{
+        if (!silent) std::cout << "non-std pdf requested." << std::endl;
         minuit->setStrategy(0);
         minuit->simplex();
         minuit->migrad();

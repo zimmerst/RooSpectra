@@ -46,7 +46,7 @@ private:
     int iter;
     int seed;
     int numCPU;
-    char *pdfname_fit;
+    TString *pdfname_fit;
     RooWorkspace *ws;
     RooDataSet *r_data;
     RooBinning *custom_binning;
@@ -68,7 +68,7 @@ public:
         custom_binning = new RooBinning(emin,emax);
         seed = 1111;
         use_custom_binning = false;
-        pdfname_fit = TString("bmodel").Data();
+        pdfname_fit = new TString("bmodel");
     }
 
     void setNbins(int val){
@@ -80,7 +80,7 @@ public:
     }
 
     void setSignalPdf(TString val){
-        pdfname_fit = val.Data();
+        pdfname_fit = val;
     }
 
     void setPlotSave(bool val){
