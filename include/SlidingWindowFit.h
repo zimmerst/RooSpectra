@@ -43,7 +43,7 @@ private:
     int iter;
     int seed;
     int numCPU;
-    char* pdfname_fit[64];
+    char pdfname_fit[64];
     RooWorkspace *ws;
     RooDataSet *r_data;
     TFile *fOutput;
@@ -133,7 +133,7 @@ public:
     void buildModel();
 
     void toyMC(char signal_pdf[64], int ntoys = 1000);
-    void SlidingWindowFit::fit(bool doToyMC);
+    void fit(bool doToyMC);
 
 private :
 
