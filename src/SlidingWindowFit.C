@@ -236,6 +236,14 @@ void SlidingWindowFit::fit(bool doToyMC){
             //minuit->minos(*gamma);
             calls++;
         }
+        else{
+            minuit->setStrategy(0);
+            minuit->simplex();
+            minuit->migrad();
+            minuit->setStrategy(1);
+            minuit->migrad();
+            minuit->improve();
+        }
     }
     minuit->setStrategy(2);
     minuit->hesse();
