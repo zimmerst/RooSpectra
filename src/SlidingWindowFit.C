@@ -182,10 +182,11 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) pdf->Print();
 
     RooAbsReal *nll;
+    RooDataHist *binned_data;
     if (is_binned){
         E->setBinning(*custom_binning);
-        RooDataHist *binned_data = (RooDataHist*)r_data->binnedClone("binned_data","binned dataset");
-        nll = pdf->createNLL(*binned_data,NumCPU(numCPU)) ;
+        binned_data = (RooDataHist*)r_data->binnedClone("binned_data","binned dataset");
+        nll = pdf->createNLL(binned_data,NumCPU(numCPU)) ;
     }
     else{
         nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
@@ -344,7 +345,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     delete r;
     delete minuit;
     delete nll;
-    if (is_binned) delete binned_data;
+    delete binned_data;
     delete c;
     glob->cd();
 
