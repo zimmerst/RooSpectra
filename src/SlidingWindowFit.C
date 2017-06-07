@@ -280,7 +280,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
     pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
     if (!use_custom_binning){
-        if (!silent) std::cout << "adding " << nbins " uniform bins from E=" << emin << " - E=" << emax << std::endl;
+        if (!silent) std::cout << "adding " << nbins << " uniform bins from E=" << emin << " - E=" << emax << std::endl;
         custom_binning->addUniform(nbins,emin,emax);
     }
 
