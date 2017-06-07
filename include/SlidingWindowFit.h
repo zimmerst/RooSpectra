@@ -65,8 +65,8 @@ public:
         seed = val;
     }
 
-    void setSignalPdf(char val){
-        pdfname_fit = val;
+    void setSignalPdf(char val[64]){
+        strcpy(pdfname_fit,val);
     }
 
     void setPlotSave(bool val){
