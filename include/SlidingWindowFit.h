@@ -126,8 +126,8 @@ public:
 
     int getEntries(){ return nentries; }
 
-    void setLogBinning(int val){
-        nbins = val;
+    void setLogBinning(int ival){
+        nbins = ival;
         use_custom_binning = true;
         double logEmin = TMath::Log10(emin);
         double logEmax = TMath::Log10(emax);
@@ -145,6 +145,7 @@ public:
     void setCustomBinning(RooBinning *binning){
         use_custom_binning = true;
         custom_binning = binning;
+        nbins = custom_binning->numBins();
     }
 
     void setIteration(int val){ iter = val; }
