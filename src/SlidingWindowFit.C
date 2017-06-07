@@ -278,12 +278,13 @@ void SlidingWindowFit::fit(bool doToyMC){
     // let's add some plotting.
     pad1->cd();
     RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
-    if ( use_custom_binning ){
-        delete plot;
-        RooPlot *plot = E->frame(Binning(custom_binning));
-    }
     pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
-    r_data->plotOn(plot,DataError(RooAbsData::SumW2));
+    if ( use_custom_binning ){
+        r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(custom_binning));
+    }
+    else{
+        r_data->plotOn(plot,DataError(RooAbsData::SumW2));
+    }
 
     n = sprintf(buffer,"E > %1.4f && E <= %1.4f (nObs=%1.1e)", emin, emax, float(nobs));
 

@@ -48,7 +48,7 @@ private:
     RooWorkspace *ws;
     RooDataSet *r_data;
     RooBinning *custom_binning;
-    bool use_custom_bins;
+    bool use_custom_binning;
     TFile *fOutput;
     TDirectory *glob;
     bool savePlot;
@@ -64,7 +64,7 @@ public:
         silent = false;
         custom_binning = new RooBinning(emin,emax);
         seed = 1111;
-        use_custom_bins = false;
+        use_custom_binning = false;
         strcpy(pdfname_fit,"bmodel");
     }
     void setSeed(int val){
@@ -127,7 +127,7 @@ public:
         double val = emin;
         while (val < emax){
             val+=pow(10.,val);
-            custom_binning.addBoundary(val);
+            custom_binning->addBoundary(val);
         }
     }
 
