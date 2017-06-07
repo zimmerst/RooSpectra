@@ -155,6 +155,18 @@ public:
         nbins = custom_binning->numBins();
     }
 
+    void setMin(TString *var, double val){
+        ws->var(var->Data())->setMin(val);
+    }
+
+    void setMax(TString *var, double val){
+        ws->var(var->Data())->setMax(val);
+    }
+
+    void setVal(TString *var, double val){
+        ws->var(var->Data())->setVal(val);
+    }
+
     void setIteration(int val){ iter = val; }
 
     void setData(char fname[128], char tname[24]);
