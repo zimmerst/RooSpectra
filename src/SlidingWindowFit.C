@@ -280,7 +280,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
     pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
     if ( use_custom_binning ){
-        r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(custom_binning));
+        r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(*custom_binning));
     }
     else{
         r_data->plotOn(plot,DataError(RooAbsData::SumW2));
