@@ -174,8 +174,10 @@ void SlidingWindowFit::fit(bool doToyMC){
     RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);
     minuit->setMinimizerType("Minuit");
-    minuit->setVerbose(false);
-    minuit->setPrintLevel(-1);
+    if (silent) {
+        minuit->setVerbose(false);
+        minuit->setPrintLevel(-1);
+    }
     RooFitResult *r = new RooFitResult();
     int calls, max_calls, status;
     calls = 1;
