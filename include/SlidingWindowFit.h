@@ -24,6 +24,7 @@
 #include "TH1D.h"
 #include "TCanvas.h"
 #include "TPad.h"
+#include "TString.h"
 #include <vector>
 #include <iostream>
 #include <string>
@@ -78,8 +79,8 @@ public:
         seed = val;
     }
 
-    void setSignalPdf(char val[64]){
-        strcpy(pdfname_fit,val);
+    void setSignalPdf(TString val){
+        pdfname_fit = val.Data();
     }
 
     void setPlotSave(bool val){
