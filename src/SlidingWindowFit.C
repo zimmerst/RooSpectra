@@ -336,8 +336,8 @@ void SlidingWindowFit::fit(bool doToyMC){
     chi2 = plot->chiSquare(ndof);
     if (!silent) {
         std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] ;
-        std::cout << "+" << index[2] << " chi2/ndof: " << chi2*ndof ;
-        std::cout << "/" << nbins-int(ndof) << " = " << chi2 << std::endl;
+        std::cout << "+" << index[2] << " chi2/ndof: " << chi2 ;
+        std::cout << "/" << nbins-int(ndof) << " = " << chi2/float(ndof) << std::endl;
     }
     plot->Delete();
 
