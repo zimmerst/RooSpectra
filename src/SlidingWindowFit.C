@@ -136,7 +136,7 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     delete fTree;
 }
 
-void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]){
+void SlidingWindowFit::fit(bool doToyMC){
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
@@ -169,7 +169,7 @@ void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]){
     norm->setMin(f_nobs - TMath::Sqrt(f_nobs));
     norm->setMax(f_nobs + TMath::Sqrt(f_nobs));
     //norm->setConstant(true);
-    RooAbsPdf *pdf = ws->pdf(signal_pdf);
+    RooAbsPdf *pdf = ws->pdf(pdfname_fit);
     if (!silent) pdf->Print();
     RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);

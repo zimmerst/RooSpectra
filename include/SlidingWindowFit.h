@@ -43,6 +43,7 @@ private:
     int iter;
     int seed;
     int numCPU;
+    char* pdfname_fit[64];
     RooWorkspace *ws;
     RooDataSet *r_data;
     TFile *fOutput;
@@ -59,9 +60,14 @@ public:
         savePlot = true;
         silent = false;
         seed = 1111;
+        pdfname_fit = "bmodel";
     }
     void setSeed(int val){
         seed = val;
+    }
+
+    void setSignalPdf(char val){
+        pdfname_fit = val;
     }
 
     void setPlotSave(bool val){
@@ -127,7 +133,7 @@ public:
     void buildModel();
 
     void toyMC(char signal_pdf[64], int ntoys = 1000);
-    void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]="bmodel");
+    void SlidingWindowFit::fit(bool doToyMC);
 
 private :
 
