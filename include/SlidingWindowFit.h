@@ -123,7 +123,7 @@ public:
         use_custom_binning = true;
         double logEmin = TMath::Log10(emin);
         double logEmax = TMath::Log10(emax);
-        double delta = (logEmax - logEmin) / float(nbins);
+        double delta = (logEmax - logEmin) / float(nbins-1);
         double val = logEmin;
         double valE = pow(10.,val);
         while (val < logEmax){

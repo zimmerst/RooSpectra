@@ -320,7 +320,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) {
         std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] ;
         std::cout << "+" << index[2] << " chi2/ndof: " << chi2*ndof ;
-        int nbins = plot->GetNbinsX();
+        int nbins = plot->GetNdivisions();
         int i_ndof= int(ndof);
         std::cout << "/" << nbins-i_ndof << " = " << chi2 << std::endl;
     }
