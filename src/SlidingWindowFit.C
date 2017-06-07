@@ -28,7 +28,7 @@ void SlidingWindowFit::buildModel(){
     ws->import(E);
     double f_nobs = 1e8;
     RooRealVar gamma("gamma", "#gamma", 3.07, 0, 10);
-    RooRealVar scale("scale", "scale" , 1.0, 1e-4,1e4);
+    RooRealVar scale("scale", "scale" , 1.0);
     //RooRealVar weight("weight","weight",1.0,0.,1.0);
     RooRealVar norm("norm","norm",f_nobs, f_nobs - TMath::Sqrt(f_nobs), f_nobs + TMath::Sqrt(f_nobs));
     ws->import(gamma);
@@ -122,10 +122,10 @@ void SlidingWindowFit::fit(bool doToyMC){
     E->setVal(ecenter);
 
     RooRealVar *gamma = ws->var("gamma");
-    RooRealVar *scale = ws->var("scale");
+    //RooRealVar *scale = ws->var("scale");
     RooRealVar *norm = ws->var("norm");
     gamma->setConstant(false);
-    scale->setConstant(false);
+    //scale->setConstant(false);
     //RooRealVar *w=ws->var("weight");
     if (!doToyMC) {
         r_data = (RooDataSet *) ws->data("data")->reduce(RooArgSet(*E), buffer);
@@ -192,16 +192,12 @@ void SlidingWindowFit::fit(bool doToyMC){
             gamma->setConstant(true);
             minuit->simplex();
             minuit->migrad();
-            gamma->setConstant(false);
-            scale->setConstant(true);
-            minuit->simplex();
-            minuit->migrad();
             norm->setConstant(true);
-            scale->setConstant(false);
+            gamma->setConstant(false);
             minuit->simplex();
             minuit->migrad();
             norm->setConstant(false);
-            scale->setConstant(false);
+            gamma->setConstant(false);
             minuit->migrad();
             minuit->setStrategy(1);
             minuit->migrad();
