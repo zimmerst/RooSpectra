@@ -189,7 +189,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     min_gamma_old= gamma->getMin();
     max_gamma_old= gamma->getMax();
     status = -1;
-    if (strcmp(pdfname_fit,"bmodel")){
+    if (strcmp(*pdfname_fit,"bmodel")){
         while (status != 0) {
             if (calls > max_calls) {
                 std::cout << "could not find good fit for MINUIT, giving up" << std::endl;

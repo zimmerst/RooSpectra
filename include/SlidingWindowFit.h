@@ -46,7 +46,7 @@ private:
     int iter;
     int seed;
     int numCPU;
-    char pdfname_fit[64];
+    char *pdfname_fit[64];
     RooWorkspace *ws;
     RooDataSet *r_data;
     RooBinning *custom_binning;
