@@ -80,7 +80,7 @@ public:
     }
 
     void setSignalPdf(TString val){
-        pdfname_fit = val;
+        pdfname_fit = TString(val.Data());
     }
 
     void setPlotSave(bool val){
