@@ -279,12 +279,12 @@ void SlidingWindowFit::fit(bool doToyMC){
     pad1->cd();
     RooPlot *plot = E->frame(emin,emax,30);//int(TMath::Sqrt(nobs))));
     pdf->paramOn(plot,Format("NEU",AutoPrecision(1)));
-    if ( use_custom_binning ){
-        r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(*custom_binning));
+    if (!use_custom_binning){
+        if (!silent) std::cout << "adding " << nbins " uniform bins from E=" << emin << " - E=" << emax << std::endl;
+        custom_binning->addUniform(nbins,emin,emax);
     }
-    else{
-        r_data->plotOn(plot,DataError(RooAbsData::SumW2));
-    }
+
+    r_data->plotOn(plot,DataError(RooAbsData::SumW2),Binning(*custom_binning));
 
     n = sprintf(buffer,"E > %1.4f && E <= %1.4f (nObs=%1.1e)", emin, emax, float(nobs));
 
@@ -320,9 +320,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     if (!silent) {
         std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] ;
         std::cout << "+" << index[2] << " chi2/ndof: " << chi2*ndof ;
-        int nbins = plot->GetNdivisions();
-        int i_ndof= int(ndof);
-        std::cout << "/" << nbins-i_ndof << " = " << chi2 << std::endl;
+        std::cout << "/" << nbins-int(ndof) << " = " << chi2 << std::endl;
     }
     plot->Delete();
 

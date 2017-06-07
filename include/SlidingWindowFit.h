@@ -40,6 +40,7 @@ private:
     double sigma_w;
     double index[3];
     double chi2;
+    int nbins;
     int nentries;
     int iter;
     int seed;
@@ -58,6 +59,7 @@ public:
     SlidingWindowFit(double v1, double v2){
         emin = v1;
         emax = v2;
+        nbins = 50;
         ws = new RooWorkspace("ws");
         sigma_w = 0.01;
         savePlot = true;
@@ -67,6 +69,11 @@ public:
         use_custom_binning = false;
         strcpy(pdfname_fit,"bmodel");
     }
+
+    void setNbins(int val){
+        nbins = val;
+    }
+
     void setSeed(int val){
         seed = val;
     }
@@ -119,7 +126,8 @@ public:
 
     int getEntries(){ return nentries; }
 
-    void setLogBinning(int nbins){
+    void setLogBinning(int val){
+        nbins = val;
         use_custom_binning = true;
         double logEmin = TMath::Log10(emin);
         double logEmax = TMath::Log10(emax);
@@ -132,6 +140,11 @@ public:
             if (!silent) std::cout << "valE: " << valE <<  " logE: " << val << std::endl;
             custom_binning->addBoundary(valE);
         }
+    }
+
+    void setCustomBinning(RooBinning *binning){
+        use_custom_binning = true;
+        custom_binning = binning;
     }
 
     void setIteration(int val){ iter = val; }
