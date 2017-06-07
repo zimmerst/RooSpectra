@@ -136,7 +136,7 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     delete fTree;
 }
 
-void SlidingWindowFit::fit(bool doToyMC){
+void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]="bmodel"){
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);
@@ -169,7 +169,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     norm->setMin(f_nobs - TMath::Sqrt(f_nobs));
     norm->setMax(f_nobs + TMath::Sqrt(f_nobs));
     //norm->setConstant(true);
-    RooAbsPdf *pdf = ws->pdf("bmodel");
+    RooAbsPdf *pdf = ws->pdf(signal_pdf);
     if (!silent) pdf->Print();
     RooAbsReal* nll = pdf->createNLL(*r_data,NumCPU(numCPU)) ;
     RooMinimizer *minuit= new RooMinimizer(*nll);
@@ -187,52 +187,53 @@ void SlidingWindowFit::fit(bool doToyMC){
     min_gamma_old= gamma->getMin();
     max_gamma_old= gamma->getMax();
     status = -1;
-    while (status != 0) {
-        if (calls > max_calls) {
-            std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
-            norm->setMin(min_norm_old);
-            norm->setMax(max_norm_old);
-            gamma->setMax(max_gamma_old);
-            gamma->setMin(min_gamma_old);
-            break;
-        }
-        if (calls > 1){
-            std::cout << "fitting - attempt: " << calls << std::endl;
-            // if it's pegging, increase
-            nm = norm->getVal();
-            gam = gamma->getVal();
-            if (nm == norm->getMax() || nm == norm->getMin()){
-                norm->setVal(norm->getMin());
-                norm->setMin(.1 * norm->getMin());
-                norm->setMax(10. * norm->getMax());
+    if (signal_pdf == "bmodel"){
+        while (status != 0) {
+            if (calls > max_calls) {
+                std::cout << "could not find good fit for MINUIT, giving up" << std::endl;
+                norm->setMin(min_norm_old);
+                norm->setMax(max_norm_old);
+                gamma->setMax(max_gamma_old);
+                gamma->setMin(min_gamma_old);
+                break;
             }
-            if (gam == gamma->getMax() || gam == norm->getMin()){
-                gamma->setVal(gamma->getMin());
-                gamma->setMin(1.5 * gamma->getMin());
-                gamma->setMax(1.5 * gamma->getMax());
+            if (calls > 1) {
+                std::cout << "fitting - attempt: " << calls << std::endl;
+                // if it's pegging, increase
+                nm = norm->getVal();
+                gam = gamma->getVal();
+                if (nm == norm->getMax() || nm == norm->getMin()) {
+                    norm->setVal(norm->getMin());
+                    norm->setMin(.1 * norm->getMin());
+                    norm->setMax(10. * norm->getMax());
+                }
+                if (gam == gamma->getMax() || gam == gamma->getMin()) {
+                    gamma->setVal(gamma->getMin());
+                    gamma->setMin(1.5 * gamma->getMin());
+                    gamma->setMax(1.5 * gamma->getMax());
+                }
             }
+            if (calls > 2) {
+                std::cout << "couldn't find good fit after 3 iterations, changing strategy!" << std::endl;
+                minuit->setStrategy(0);
+                gamma->setConstant(true);
+                minuit->simplex();
+                minuit->migrad();
+                norm->setConstant(true);
+                gamma->setConstant(false);
+                minuit->simplex();
+                minuit->migrad();
+                norm->setConstant(false);
+                gamma->setConstant(false);
+                minuit->migrad();
+                minuit->setStrategy(1);
+                minuit->migrad();
+            } else minuit->migrad();
+            r = minuit->save();
+            status = r->status();
+            //minuit->minos(*gamma);
+            calls++;
         }
-        if (calls > 2){
-            std::cout << "couldn't find good fit after 3 iterations, changing strategy!" << std::endl;
-            minuit->setStrategy(0);
-            gamma->setConstant(true);
-            minuit->simplex();
-            minuit->migrad();
-            norm->setConstant(true);
-            gamma->setConstant(false);
-            minuit->simplex();
-            minuit->migrad();
-            norm->setConstant(false);
-            gamma->setConstant(false);
-            minuit->migrad();
-            minuit->setStrategy(1);
-            minuit->migrad();
-        }
-        else minuit->migrad();
-        r = minuit->save();
-        status = r->status();
-        //minuit->minos(*gamma);
-        calls++;
     }
     minuit->setStrategy(2);
     minuit->hesse();
@@ -300,7 +301,7 @@ void SlidingWindowFit::fit(bool doToyMC){
     c->Close();
     chi2 = plot->chiSquare(ndof);
     plot->Delete();
-    if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2 << std::endl;
+    if (!silent) std::cout << "E: " << ecenter << " gamma: " << index[0] << "" << index[1] << "+" << index[2] << " chi2/ndof: " << chi2*ndof << "/" << ndof << std::endl;
 
     // CLEANUP: remove all new stuff
     delete r;
