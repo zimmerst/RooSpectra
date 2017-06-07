@@ -136,7 +136,7 @@ void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
     delete fTree;
 }
 
-void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]="bmodel"){
+void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]){
     int n;
     char buffer[128];
     n = sprintf(buffer, "E > %1.4f && E <= %1.4f", emin, emax);

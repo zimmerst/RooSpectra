@@ -127,8 +127,7 @@ public:
     void buildModel();
 
     void toyMC(char signal_pdf[64], int ntoys = 1000);
-
-    void fit(bool doToyMC = false);
+    void SlidingWindowFit::fit(bool doToyMC,char signal_pdf[64]="bmodel")
 
 private :
 
