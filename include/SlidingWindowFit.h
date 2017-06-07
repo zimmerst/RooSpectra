@@ -15,6 +15,7 @@
 #include "RooMinimizer.h"
 #include "RooRandom.h"
 #include "RooFitResult.h"
+#include "RooBinning.h"
 #include "TMath.h"
 #include "TFile.h"
 #include "TDirectory.h"
@@ -46,6 +47,8 @@ private:
     char pdfname_fit[64];
     RooWorkspace *ws;
     RooDataSet *r_data;
+    RooBinning *custom_binning;
+    bool use_custom_bins;
     TFile *fOutput;
     TDirectory *glob;
     bool savePlot;
@@ -59,7 +62,9 @@ public:
         sigma_w = 0.01;
         savePlot = true;
         silent = false;
+        custom_binning = new RooBinning(emin,emax);
         seed = 1111;
+        use_custom_bins = false;
         strcpy(pdfname_fit,"bmodel");
     }
     void setSeed(int val){
@@ -113,6 +118,18 @@ public:
     };
 
     int getEntries(){ return nentries; }
+
+    void setLogBinning(int nbins){
+        use_custom_binning = true;
+        double logEmin = TMath::Log10(emin);
+        double logEmax = TMath::Log10(emax);
+        double delta = (logEmax - logEmin) / float(nbins);
+        double val = emin;
+        while (val < emax){
+            val+=pow(10.,val);
+            custom_binning.addBoundary(val);
+        }
+    }
 
     void setIteration(int val){ iter = val; }
 
