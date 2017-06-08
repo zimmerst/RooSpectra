@@ -28,7 +28,7 @@ void SlidingWindowFit::buildModel(){
     ws->import(E);
     double f_nobs = 1e8;
     RooRealVar gamma("gamma", "#gamma", 3.07, 0, 10);
-    RooRealVar scale("scale", "scale" , 1.0);
+    RooRealVar scale("scale", "scale" , 1.0,1e-12,1e12);
     RooRealVar gamma1("gamma1","$gamma1",3,0,10);
     RooRealVar gamma2("gamma2","$gamma2",3,0,10);
     RooRealVar beta("beta","#beta",1,0,20);
