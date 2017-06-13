@@ -167,6 +167,10 @@ public:
         ws->var(var->Data())->setVal(val);
     }
 
+    void setFixed(TString *var, bool val){
+        ws->var(var->Data())->setConstant(val);
+    }
+
     void setIteration(int val){ iter = val; }
 
     void setData(char fname[128], char tname[24]);
