@@ -78,6 +78,10 @@ void SlidingWindowFit::buildModel(){
         RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(norm));
         RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(norm));
         RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*proton_bkg),RooArgList(norm));
+        ws->import(bmodel);
+        ws->import(bmodel1);
+        ws->import(bmodel2);
+        ws->import(bmodel3);
 
     }
     else{
@@ -88,17 +92,13 @@ void SlidingWindowFit::buildModel(){
         RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf),RooArgList(norm));
         RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf),RooArgList(norm));
         RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf),RooArgList(norm));
+        ws->import(bmodel);
+        ws->import(bmodel1);
+        ws->import(bmodel2);
+        ws->import(bmodel3);
 
     }
 
-
-
-
-
-    ws->import(bmodel);
-    ws->import(bmodel1);
-    ws->import(bmodel2);
-    ws->import(bmodel3);
     if (!silent) ws->Print();
 }
 void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
