@@ -71,7 +71,7 @@ void SlidingWindowFit::buildModel(){
     RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
 
     if (include_proton_bkg){
-        RooAbsPdf *proton_bkg = w->pdf("proton_bkg");
+        RooAbsPdf *proton_bkg = ws->pdf("proton_bkg");
         RooAddPdf bmodel("bmodel","bmodel",
                          RooArgList(pwl_pdf,proton_bkg),
                          RooArgList(norm));
