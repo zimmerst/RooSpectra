@@ -99,7 +99,7 @@ void SlidingWindowFit::buildModel(){
     RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
 
     if (include_proton_bkg){
-        RooRealVar frac("frac",0.5,0.,1.);
+        RooRealVar frac("frac","signal fraction",0.5,0.,1.);
         RooAbsPdf *proton_bkg = ws->pdf("prot_bkg_pdf");
         RooAddPdf bmodel("bmodel","bmodel",
                          RooArgList(pwl_pdf,*proton_bkg),
