@@ -4,10 +4,13 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     TFile *fEff = TFile::Open(fname);
     TH1D *acc_eff = (TH1D*)fEff->Get("acceff_2");
     TF1 *fitfun = new TF1("fitfun","TMath::Exp([0]+[1]*(TMath::Log(x))+[2]*(TMath::Log(x))**2+[3]*(TMath::Log(x))**3+[4]*(TMath::Log(x))**4)",emin,emax);
-    acc_eff->Fit("fitfun","RMDLL");
+    acc_eff->Fit("fitfun","RMDLLS");
     RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
     ws->import(*proton_bkg);
     include_proton_bkg=true;
+    if (!silent){
+        ws->Print();
+    }
     delete fitfun;
     delete acc_eff;
     delete fEff;
