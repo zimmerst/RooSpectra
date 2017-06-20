@@ -26,7 +26,8 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     ws->Print();
     //RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
     RooFormulaVar proton_bkg("proton_bkg","exp(p0+p1*(log(E))+p2*(log(E))**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
-    ws->import(proton_bkg);
+    RooGenericPdf prot_bkg_pdf =("prot_bkg_pdf","proton pdf",RooArgSet(proton_bkg));
+    ws->import(prot_bkg_pdf);
     include_proton_bkg=true;
     ws->Print();
     if (!silent){
@@ -98,16 +99,14 @@ void SlidingWindowFit::buildModel(){
     RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
 
     if (include_proton_bkg){
-        RooAbsPdf *proton_bkg = ws->pdf("proton_bkg");
+        RooAbsPdf *proton_bkg = ws->pdf("prot_bkg_pdf");
         RooRealVar nP("nP","number of protons",1.,0,fscale);
-        RooGenericPdf prot_bkg_pdf =("prot_bkg_pdf","proton pdf",RooArgSet(*proton_bkg));
-
         RooAddPdf bmodel("bmodel","bmodel",
-                         RooArgList(pwl_pdf,*prot_bkg_pdf),
+                         RooArgList(pwl_pdf,*proton_bkg),
                          RooArgList(norm));
-        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*prot_bkg_pdf),RooArgList(norm));
-        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*prot_bkg_pdf),RooArgList(norm));
-        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*prot_bkg_pdf),RooArgList(norm));
+        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(norm));
+        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(norm));
+        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*proton_bkg),RooArgList(norm));
         ws->import(bmodel);
         ws->import(bmodel1);
         ws->import(bmodel2);
