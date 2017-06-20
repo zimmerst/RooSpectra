@@ -375,11 +375,13 @@ void SlidingWindowFit::fit(bool doToyMC){
     plot->Delete();
 
     // CLEANUP: remove all new stuff
+    /*
     delete r;
     delete minuit;
     delete nll;
     delete binned_data;
     delete c;
+    */
     glob->cd();
 
 }
