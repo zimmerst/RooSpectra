@@ -23,8 +23,10 @@
 #include "TROOT.h"
 #include "TH1D.h"
 #include "TCanvas.h"
+#include "TF1.h"
 #include "TPad.h"
 #include "TString.h"
+#include "RooTFnBinding.h"
 #include <vector>
 #include <iostream>
 #include <string>
@@ -56,6 +58,7 @@ private:
     bool savePlot;
     bool silent;
     bool is_binned;
+    bool include_proton_bkg;
 
 public:
     SlidingWindowFit(double v1, double v2){
@@ -66,12 +69,15 @@ public:
         sigma_w = 0.01;
         savePlot = true;
         silent = false;
+        include_proton_bkg = false;
         custom_binning = new RooBinning(emin,emax);
         seed = 1111;
         use_custom_binning = false;
         pdfname_fit = new TString("bmodel");
         is_binned = false;
     }
+
+    void addProtonBkg();
 
     void setNbins(int val){
         nbins = val;

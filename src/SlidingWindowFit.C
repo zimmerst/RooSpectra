@@ -1,5 +1,15 @@
 #include "SlidingWindowFit.h"
 
+void SlidingWindowFit::addProtonBkg(char fname[128]){
+    TFile *fEff = TFile::Open(fname);
+    TH1D *acc_eff = (TH1D*)fEff->Get("acceff_2");
+    TF1 *fitfun = new TF1("fitfun","TMath::Exp([0]+[1]*(TMath::Log(x))+[2]*(TMath::Log(x))**2+[3]*(TMath::Log(x))**3+[4]*(TMath::Log(x))**4)",emin,emax);
+    acc_eff->Fit("fitfun","RMDLL");
+    RooAbsReal* proton_bkg = bindFunction(fitfun,ws->var("E"));
+    ws->import(proton_bkg);
+    include_proton_bkg=true;
+}
+
 void SlidingWindowFit::setData(char fname[128], char tname[24]){
     if (!silent){
         std::cout << "file name: " << fname << std::endl;
@@ -60,13 +70,28 @@ void SlidingWindowFit::buildModel(){
     RooGenericPdf pwl_exp2_pdf("pwl_exp2_pdf","pwl_exp2",RooArgSet(pwl_exp2));
     RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
 
-    RooAddPdf bmodel("bmodel","bmodel",
-                       RooArgList(pwl_pdf),
-                       RooArgList(norm));
+    if (include_proton_bkg){
+        RooAbsPdf *proton_bkg = w->pdf("proton_bkg");
+        RooAddPdf bmodel("bmodel","bmodel",
+                         RooArgList(pwl_pdf,proton_bkg),
+                         RooArgList(norm));
+        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,proton_bkg),RooArgList(norm));
+        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,proton_bkg),RooArgList(norm));
+        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,proton_bkg),RooArgList(norm));
 
-    RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf),RooArgList(norm));
-    RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf),RooArgList(norm));
-    RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf),RooArgList(norm));
+    }
+    else{
+        RooAddPdf bmodel("bmodel","bmodel",
+                         RooArgList(pwl_pdf),
+                         RooArgList(norm));
+
+        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf),RooArgList(norm));
+        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf),RooArgList(norm));
+        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf),RooArgList(norm));
+
+    }
+
+
 
 
 
@@ -212,6 +237,9 @@ void SlidingWindowFit::fit(bool doToyMC){
     min_gamma_old= gamma->getMin();
     max_gamma_old= gamma->getMax();
     status = -1;
+    minuit->simplex();
+    //minuit->setMaxEvalMultiplier(100);
+    //minuit->seek();
 
     if (pdfname_fit->CompareTo(TString("bmodel") == 0)){
         while (status != 0) {
