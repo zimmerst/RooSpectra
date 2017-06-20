@@ -77,7 +77,7 @@ public:
         is_binned = false;
     }
 
-    void addProtonBkg();
+    void addProtonBkg(char fname[128]);
 
     void setNbins(int val){
         nbins = val;
