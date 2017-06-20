@@ -1,8 +1,8 @@
 #include "SlidingWindowFit.h"
 
-void SlidingWindowFit::addProtonBkg(char fname[128]){
+void SlidingWindowFit::addProtonBkg(char fname[128], char histname[64]="acceff_2"){
     TFile *fEff = TFile::Open(fname);
-    TH1D *acc_eff = (TH1D*)fEff->Get("acceff_2");
+    TH1D *acc_eff = (TH1D*)fEff->Get(histname);
     TF1 *fitfun = new TF1("fitfun","exp([p0]+[p1]*(log(x))+[p2]*(log(x))**2+[p3]*(log(x))**3+[p4]*(log(x))**4)",emin,emax);
     acc_eff->Fit("fitfun","RMDLLS");
     RooRealVar E("E","Energy",.5*(emax-emin),emin,emax);
@@ -107,6 +107,7 @@ void SlidingWindowFit::buildModel(){
         RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(frac));
         RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(frac));
         RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*proton_bkg),RooArgList(frac));
+        ws->import(frac);
         ws->import(bmodel);
         ws->import(bmodel1);
         ws->import(bmodel2);

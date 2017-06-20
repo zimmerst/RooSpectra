@@ -77,7 +77,7 @@ public:
         is_binned = false;
     }
 
-    void addProtonBkg(char fname[128]);
+    void addProtonBkg(char fname[128], char histname[64]);
 
     void setNbins(int val){
         nbins = val;
@@ -159,6 +159,12 @@ public:
         use_custom_binning = true;
         custom_binning = binning;
         nbins = custom_binning->numBins();
+    }
+
+    double getSignalFraction(int idx=0){
+        RooRealVar *frac = ws->var("frac");
+        if (idx == 0) return frac->getVal();
+        else return frac->getError();
     }
 
     void setMin(TString *var, double val){
