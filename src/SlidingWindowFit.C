@@ -8,6 +8,9 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
     ws->import(*proton_bkg);
     include_proton_bkg=true;
+    delete fitfun;
+    delete acc_eff;
+    delete fEff;
 }
 
 void SlidingWindowFit::setData(char fname[128], char tname[24]){
@@ -96,9 +99,7 @@ void SlidingWindowFit::buildModel(){
         ws->import(bmodel1);
         ws->import(bmodel2);
         ws->import(bmodel3);
-
     }
-
     if (!silent) ws->Print();
 }
 void SlidingWindowFit::toyMC(char signal_pdf[64], int ntoys){
