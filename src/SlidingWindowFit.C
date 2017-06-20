@@ -5,7 +5,7 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     TH1D *acc_eff = (TH1D*)fEff->Get("acceff_2");
     TF1 *fitfun = new TF1("fitfun","exp([p0]+[p1]*(log(x))+[p2]*(log(x))**2+[p3]*(log(x))**3+[p4]*(log(x))**4)",emin,emax);
     acc_eff->Fit("fitfun","RMDLLS");
-
+    RooRealVar E("E","Energy",.5*(emax-emin),emin,emax);
     RooRealVar p0("p0","p0",fitfun->GetParameter(0));
     RooRealVar p1("p1","p1",fitfun->GetParameter(1));
     RooRealVar p2("p2","p2",fitfun->GetParameter(2));
@@ -25,9 +25,7 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     ws->import(p4);
     ws->Print();
     //RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
-    RooFormulaVar logE("logE","TMath::Log10(E)",RooArgList(*ws->var("E")));
-    logE.Print();
-    RooFormulaVar proton_bkg("proton_bkg","exp(p0+p1*(logE)+p2*(logE)**2+p3*(logE)**3+p4*(logE)**4)",RooArgList(logE,p0,p1,p2,p3,p4));
+    RooFormulaVar proton_bkg("proton_bkg","exp(p0+p1*(log(E))+p2*(logE)**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
     ws->import(proton_bkg);
     include_proton_bkg=true;
     ws->Print();
