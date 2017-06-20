@@ -99,14 +99,14 @@ void SlidingWindowFit::buildModel(){
     RooGenericPdf bpl_pdf("bpl_pdf","bpl",RooArgSet(bpl));
 
     if (include_proton_bkg){
+        RooRealVar frac("frac",0.5,0.,1.);
         RooAbsPdf *proton_bkg = ws->pdf("prot_bkg_pdf");
-        RooRealVar nP("nP","number of protons",1.,0,fscale);
         RooAddPdf bmodel("bmodel","bmodel",
                          RooArgList(pwl_pdf,*proton_bkg),
-                         RooArgList(norm));
-        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(norm));
-        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(norm));
-        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*proton_bkg),RooArgList(norm));
+                         RooArgList(frac));
+        RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(frac));
+        RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(frac));
+        RooAddPdf bmodel3("bmodel3","bmodel3",RooArgList(bpl_pdf,*proton_bkg),RooArgList(frac));
         ws->import(bmodel);
         ws->import(bmodel1);
         ws->import(bmodel2);
