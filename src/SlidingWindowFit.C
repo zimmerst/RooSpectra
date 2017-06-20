@@ -25,7 +25,7 @@ void SlidingWindowFit::addProtonBkg(char fname[128]){
     ws->import(p4);
     ws->Print();
     //RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
-    RooFormulaVar proton_bkg("proton_bkg","exp(p0+p1*(log(E))+p2*(logE)**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
+    RooFormulaVar proton_bkg("proton_bkg","exp(p0+p1*(log(E))+p2*(log(E))**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
     ws->import(proton_bkg);
     include_proton_bkg=true;
     ws->Print();
