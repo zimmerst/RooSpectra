@@ -46,7 +46,7 @@ void SlidingWindowFit::addSignalEfficiency(char fname[128], char histname[64]){
     if (!silent) acc_eff->Print();
     TF1 *fitfun = new TF1("fitfun","exp([p0]+[p1]*(log(x))+[p2]*(log(x))**2+[p3]*(log(x))**3+[p4]*(log(x))**4)",emin,emax);
     acc_eff->Fit("fitfun","RMDLLS");
-    RooRealVar E("E","Energy",.5*(emax-emin),emin,emax);
+    RooRealVar *E = ws->var("E")
     RooRealVar p0("p0","p0",fitfun->GetParameter(0));
     RooRealVar p1("p1","p1",fitfun->GetParameter(1));
     RooRealVar p2("p2","p2",fitfun->GetParameter(2));
@@ -66,7 +66,7 @@ void SlidingWindowFit::addSignalEfficiency(char fname[128], char histname[64]){
     ws->import(p4);
     ws->Print();
     //RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
-    RooFormulaVar sig_eff("sig_eff","exp(p0+p1*(log(E))+p2*(log(E))**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
+    RooFormulaVar sig_eff("sig_eff","exp(p0+p1*(log(E))+p2*(log(E))**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(*E,p0,p1,p2,p3,p4));
     ws->import(sig_eff);
     include_eff=true;
     if (!silent){
