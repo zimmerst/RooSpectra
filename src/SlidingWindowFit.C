@@ -40,7 +40,7 @@ void SlidingWindowFit::addProtonBkg(char fname[128], char histname[64]){
 }
 
 
-void SlidingWindowFit::addEfficiency(char fname[128], char histname[64]){
+void SlidingWindowFit::addSignalEfficiency(char fname[128], char histname[64]){
     TFile *fEff = TFile::Open(fname);
     TH1D *acc_eff = (TH1D*)fEff->Get(histname);
     if (!silent) acc_eff->Print();
