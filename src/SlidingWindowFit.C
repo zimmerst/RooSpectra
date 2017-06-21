@@ -39,6 +39,49 @@ void SlidingWindowFit::addProtonBkg(char fname[128], char histname[64]){
     delete fEff;
 }
 
+
+void SlidingWindowFit::addEfficiency(char fname[128], char histname[64]){
+    TFile *fEff = TFile::Open(fname);
+    TH1D *acc_eff = (TH1D*)fEff->Get(histname);
+    if (!silent) acc_eff->Print();
+    TF1 *fitfun = new TF1("fitfun","exp([p0]+[p1]*(log(x))+[p2]*(log(x))**2+[p3]*(log(x))**3+[p4]*(log(x))**4)",emin,emax);
+    acc_eff->Fit("fitfun","RMDLLS");
+    RooRealVar E("E","Energy",.5*(emax-emin),emin,emax);
+    RooRealVar p0("p0","p0",fitfun->GetParameter(0));
+    RooRealVar p1("p1","p1",fitfun->GetParameter(1));
+    RooRealVar p2("p2","p2",fitfun->GetParameter(2));
+    RooRealVar p3("p3","p3",fitfun->GetParameter(3));
+    RooRealVar p4("p4","p4",fitfun->GetParameter(4));
+
+    p0.setConstant(true);
+    p1.setConstant(true);
+    p2.setConstant(true);
+    p3.setConstant(true);
+    p4.setConstant(true);
+
+    ws->import(p0);
+    ws->import(p1);
+    ws->import(p2);
+    ws->import(p3);
+    ws->import(p4);
+    ws->Print();
+    //RooAbsReal* proton_bkg = bindFunction(fitfun,*ws->var("E"));
+    RooFormulaVar sig_eff("sig_eff","exp(p0+p1*(log(E))+p2*(log(E))**2+p3*(log(E))**3+p4*(log(E))**4)",RooArgList(E,p0,p1,p2,p3,p4));
+    ws->import(sig_eff);
+    include_eff=true;
+    if (!silent){
+        ws->Print();
+    }
+    delete fitfun;
+    delete acc_eff;
+    delete fEff;
+}
+
+
+
+
+
+
 void SlidingWindowFit::setData(char fname[128], char tname[24]){
     if (!silent){
         std::cout << "file name: " << fname << std::endl;
@@ -88,11 +131,16 @@ void SlidingWindowFit::buildModel(){
     if (!silent) ws->Print();
     // build powerlaw
     //RooGenericPdf pwl("pwl","powerlaw","scale*pow(E,-gamma)",RooArgSet(E,gamma,scale));
-    RooFormulaVar pwl("pwl","(scale*E)**(-gamma)",RooArgList(E,gamma,scale));
-    RooFormulaVar pwl_exp("pwl_exp","(scale*E)**(-gamma)*exp(-E/Ec)",RooArgList(E,gamma,scale,Ec));
-    RooFormulaVar pwl_exp2("pwl_exp2","(scale*E)**(-gamma)*pow(exp(-E/Ec),beta)",RooArgList(E,gamma,scale,Ec,beta));
-    RooFormulaVar bpl("bpl","(scale*E/Ec)**(-gamma1) * (1+(scale*E/Ec)**(1./alpha))**(-(gamma2-gamma1)*alpha) ",
-                      RooArgList(E,gamma1,gamma2,scale,Ec,alpha));
+    RooRealVar *eff = new RooRealVar("eff","eff",1.);
+    eff->setConstant(true);
+    if (include_eff){
+        eff = ws->var("sig_eff");
+    }
+    RooFormulaVar pwl("pwl","(scale*E)**(-gamma)*eff",RooArgList(E,gamma,scale,*eff));
+    RooFormulaVar pwl_exp("pwl_exp","(scale*E)**(-gamma)*exp(-E/Ec)*eff",RooArgList(E,gamma,scale,Ec,*eff));
+    RooFormulaVar pwl_exp2("pwl_exp2","(scale*E)**(-gamma)*pow(exp(-E/Ec),beta)*eff",RooArgList(E,gamma,scale,Ec,beta,*eff));
+    RooFormulaVar bpl("bpl","(scale*E/Ec)**(-gamma1) * (1+(scale*E/Ec)**(1./alpha))**(-(gamma2-gamma1)*alpha) *eff ",
+                      RooArgList(E,gamma1,gamma2,scale,Ec,alpha,*eff));
     //ws->import(pwl);
     RooGenericPdf pwl_pdf("pwl_pdf","pwl",RooArgSet(pwl));
     RooGenericPdf pwl_exp_pdf("pwl_exp_pdf","pwl_exp",RooArgSet(pwl_exp));
@@ -101,9 +149,9 @@ void SlidingWindowFit::buildModel(){
 
     if (include_proton_bkg){
         RooRealVar frac("frac","signal fraction",0.5,0.,1.);
-        RooAbsPdf *proton_bkg = ws->pdf("prot_bkg_pdf");
+        RooAbsPdf *eff = ws->pdf("eff");
         RooAddPdf bmodel("bmodel","bmodel",
-                         RooArgList(pwl_pdf,*proton_bkg),
+                         RooArgList(pwl_pdf,*eff),
                          RooArgList(frac));
         RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(frac));
         RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(frac));

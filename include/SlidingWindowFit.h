@@ -59,6 +59,7 @@ private:
     bool silent;
     bool is_binned;
     bool include_proton_bkg;
+    bool include_eff;
 
 public:
     SlidingWindowFit(double v1, double v2){
@@ -70,12 +71,14 @@ public:
         savePlot = true;
         silent = false;
         include_proton_bkg = false;
+        include_eff = false;
         custom_binning = new RooBinning(emin,emax);
         seed = 1111;
         use_custom_binning = false;
         pdfname_fit = new TString("bmodel");
         is_binned = false;
     }
+    void addSignalEfficiency(char fname[128], char histname[64]);
 
     void addProtonBkg(char fname[128], char histname[64]);
 
