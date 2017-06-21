@@ -46,7 +46,7 @@ void SlidingWindowFit::addSignalEfficiency(char fname[128], char histname[64]){
     if (!silent) acc_eff->Print();
     TF1 *fitfun = new TF1("fitfun","exp([p0]+[p1]*(log(x))+[p2]*(log(x))**2+[p3]*(log(x))**3+[p4]*(log(x))**4)",emin,emax);
     acc_eff->Fit("fitfun","RMDLLS");
-    RooRealVar *E = ws->var("E")
+    RooRealVar *E = ws->var("E");
     RooRealVar p0("p0","p0",fitfun->GetParameter(0));
     RooRealVar p1("p1","p1",fitfun->GetParameter(1));
     RooRealVar p2("p2","p2",fitfun->GetParameter(2));
