@@ -149,9 +149,9 @@ void SlidingWindowFit::buildModel(){
 
     if (include_proton_bkg){
         RooRealVar frac("frac","signal fraction",0.5,0.,1.);
-        RooAbsPdf *eff = ws->pdf("eff");
+        RooAbsPdf *proton_bkg = ws->pdf("prot_bkg_pdf");
         RooAddPdf bmodel("bmodel","bmodel",
-                         RooArgList(pwl_pdf,*eff),
+                         RooArgList(pwl_pdf,*proton_bkg),
                          RooArgList(frac));
         RooAddPdf bmodel1("bmodel1","bmodel1",RooArgList(pwl_exp_pdf,*proton_bkg),RooArgList(frac));
         RooAddPdf bmodel2("bmodel2","bmodel2",RooArgList(pwl_exp2_pdf,*proton_bkg),RooArgList(frac));
